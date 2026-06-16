@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>FarmaExpress</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">💊 FarmaExpress</div>
+
+    <nav>
+    <a href="#productos">Catálogo</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#contacto">Contacto</a>
+
+    <a href="#" onclick="abrirLogin()">
+    <i class="fas fa-user-shield"></i> Admin
+</a>
+        <a href="https://wa.me/51999999999" target="_blank" class="btn-whatsapp-nav">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+    </nav>
+
+    <div class="carrito-icono" onclick="toggleCarrito()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="contador-carrito">0</span>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-badge">🔥 Ofertas de farmacia</span>
+        <h1>Cuida tu salud con <span class="highlight">FarmaExpress</span></h1>
+        <p>Medicamentos, vitaminas y productos de salud al mejor precio.</p>
+
+        <div class="hero-btns">
+            <a href="#productos" class="btn-primary">Ver productos</a>
+            <a href="#servicios" class="btn-secondary">Nuestros servicios</a>
+        </div>
+    </div>
+
+    <div class="hero-image">
+        <img src="https://blog.farmaciavieitez.com/wp-content/uploads/2016/11/farmaco-medicamento-farmacia.jpg" alt="Farmacia">
+    </div>
+</section>
+
+<section class="por-que">
+    <div class="container">
+        <div class="pq-grid">
+            <div class="pq-card">
+                <div class="pq-icon"><i class="fas fa-truck"></i></div>
+                <h3>Delivery rápido</h3>
+                <p>Envíos a domicilio en Lima.</p>
+            </div>
+
+            <div class="pq-card">
+                <div class="pq-icon"><i class="fas fa-pills"></i></div>
+                <h3>Productos confiables</h3>
+                <p>Medicamentos y vitaminas seleccionadas.</p>
+            </div>
+
+            <div class="pq-card">
+                <div class="pq-icon"><i class="fas fa-credit-card"></i></div>
+                <h3>Pago seguro</h3>
+                <p>Compra fácil desde la web.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="destacados">
+    <div class="container">
+        <h2>⭐ Productos destacados</h2>
+
+        <div class="destacados-grid">
+            {% for prod in destacados %}
+            <div class="card-destacado">
+                <span class="badge-oferta">{{ prod.badge }}</span>
+                <img src="{{ prod.imagen }}" alt="{{ prod.nombre }}">
+                <h3>{{ prod.nombre }}</h3>
+                <p class="precio-dest">{{ prod.precio }}</p>
+
+                 <button class="btn-agregar"
+        onclick="agregarCarrito(this.dataset.nombre, this.dataset.precio, Number(this.dataset.precionum))"
+        data-nombre="{{ prod.nombre }}"
+        data-precio="{{ prod.precio }}"
+        data-precionum="{{ prod.precio_num }}">
+    Añadir al carrito
+</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="productos" class="container">
+    <h2>🛒 Catálogo de farmacia</h2>
+
+  <div class="filtros">
+    <button class="filtro activo" onclick="filtrar('principal', this)">Pantalla principal</button>
+    <button class="filtro" onclick="filtrar('todos', this)">Todos</button>
+    <button class="filtro" onclick="filtrar('analgesico', this)">Analgésicos</button>
+    <button class="filtro" onclick="filtrar('vitamina', this)">Vitaminas</button>
+    <button class="filtro" onclick="filtrar('bebe', this)">Bebés</button>
+    <button class="filtro" onclick="filtrar('cuidado', this)">Cuidado personal</button>
+    <button class="filtro" onclick="filtrar('antibiotico', this)">Antibióticos</button>
+    <button class="filtro" onclick="filtrar('antivirale', this)">Antivirales</button>
+</div>
+
+    <div class="grid" id="grid-productos">
+        {% for prod in productos %}
+        <div class="card" data-categoria="{{ prod.categoria_key }}">
+            <img src="{{ prod.imagen }}" alt="{{ prod.nombre }}">
+
+            <div class="card-body">
+                <span class="tag">{{ prod.categoria }}</span>
+                <h3>{{ prod.nombre }}</h3>
+                <p class="desc">{{ prod.descripcion }}</p>
+                <p class="precio">{{ prod.precio }}</p>
+
+                <button class="btn-comprar"
+        onclick="agregarCarrito(this.dataset.nombre, this.dataset.precio, Number(this.dataset.precionum))"
+        data-nombre="{{ prod.nombre }}"
+        data-precio="{{ prod.precio }}"
+        data-precionum="{{ prod.precio_num }}">
+    Añadir al carrito
+</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="carrito-panel" id="carritoPanel">
+    <div class="carrito-header">
+        <h3>Tu carrito</h3>
+        <button onclick="toggleCarrito()">X</button>
+    </div>
+
+    <div class="carrito-items" id="carritoItems">
+        <p class="carrito-vacio">Tu carrito está vacío</p>
+    </div>
+
+    <div class="carrito-footer">
+        <p class="total">Total: <strong id="totalCarrito">S/. 0</strong></p>
+        <button class="btn-pagar" onclick="mostrarFormularioPago()">Comprar ahora</button>
+    </div>
+</div>
+
+<div class="overlay-carrito" id="overlayCarrito" onclick="toggleCarrito()"></div>
+
+<div class="modal" id="modalPago">
+    <div class="modal-content">
+        <span class="cerrar" onclick="cerrarModal('modalPago')">&times;</span>
+        <h2>Finalizar compra</h2>
+
+        <div class="resumen-compra" id="resumenCompra"></div>
+
+        <div class="form-grid">
+            <input type="text" placeholder="Nombre completo">
+            <input type="text" placeholder="DNI">
+            <input type="tel" placeholder="Teléfono">
+            <input type="email" placeholder="Correo">
+            <input type="text" placeholder="Dirección de entrega">
+            <input type="text" placeholder="Método de pago">
+        </div>
+
+        <button class="btn-confirmar" onclick="confirmarCompra()">Confirmar compra</button>
+    </div>
+</div>
+
+<section id="servicios" class="container bg-light">
+    <h2>🩺 Servicios</h2>
+
+    <div class="grid">
+        {% for serv in servicios %}
+        <div class="card-servicio">
+            <div class="serv-icon"><i class="{{ serv.icono }}"></i></div>
+            <h3>{{ serv.nombre }}</h3>
+            <p>{{ serv.descripcion }}</p>
+
+            <a href="https://wa.me/51999999999" target="_blank" class="btn-whatsapp">
+                Consultar por WhatsApp
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="contacto" class="container">
+    <h2>📍 Contacto</h2>
+
+    <div class="contacto-info">
+        <h3>FarmaExpress</h3>
+        <p><i class="fas fa-map-marker-alt"></i> Av. 13 de Enero, Lima, Perú</p>
+        <p><i class="fas fa-clock"></i> Lunes a sábado: 8:00am - 8:00pm</p>
+        <p><i class="fas fa-phone"></i> +51 943021101 </p>
+        <p><i class="fas fa-envelope"></i> contacto@farmaexpress.pe</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 FarmaExpress. Todos los derechos reservados.</p>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarTodosModales()"></div>
+
+<!-- LOGIN ADMIN -->
+<div class="login-overlay" id="loginOverlay" onclick="cerrarLogin()"></div>
+
+<div class="login-modal" id="loginModal">
+
+    <button class="cerrar-login" onclick="cerrarLogin()">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <h2>Acceso Administrador</h2>
+
+    <form action="/login" method="POST">
+
+        <label>Usuario</label>
+        <input type="text" name="usuario" placeholder="Ingrese usuario" required>
+
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="Ingrese contraseña" required>
+
+        <button type="submit" class="btn-login">
+            Ingresar
+        </button>
+
+    </form>
+
+</div>
+
+<script src="/static/js/script.js"></script>
+</body>
+</html>

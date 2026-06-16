@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin FarmaExpress</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background:#f5f7fa;
+            padding:30px;
+        }
+
+        h1{
+            color:#0c8f3c;
+        }
+
+        .top{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:30px;
+        }
+
+        .logout{
+            background:#e74c3c;
+            color:white;
+            padding:10px 20px;
+            text-decoration:none;
+            border-radius:8px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th{
+            background:#0c8f3c;
+            color:white;
+            padding:12px;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        img{
+            width:60px;
+            height:60px;
+            object-fit:cover;
+            border-radius:8px;
+        }
+        .form-producto{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:30px;
+
+    display:grid;
+    gap:10px;
+}
+
+.form-producto input{
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.form-producto button{
+    background:#0c8f3c;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="top">
+
+        <h1>💊 Panel Administrador</h1>
+
+        <a href="/logout" class="logout">
+            Cerrar sesión
+        </a>
+
+    </div>
+<h2>Agregar producto</h2>
+
+<form action="/agregar_producto" method="POST" class="form-producto">
+
+    <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre del producto"
+        required>
+
+    <input
+        type="text"
+        name="precio"
+        placeholder="Precio"
+        required>
+
+    <input
+        type="text"
+        name="categoria"
+        placeholder="Categoría"
+        required>
+
+    <input
+        type="text"
+        name="imagen"
+        placeholder="URL de imagen"
+        required>
+
+    <input
+        type="text"
+        name="categoria_key"
+        placeholder="categoria_key"
+        required>
+
+    <button type="submit">
+        Agregar producto
+    </button>
+
+</form> 
+    <h2>Productos registrados</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for prod in productos %}
+
+            <tr>
+
+                <td>
+                    <img src="{{ prod.imagen }}">
+                </td>
+
+                <td>
+                    {{ prod.nombre }}
+                </td>
+
+                <td>
+                    {{ prod.precio }}
+                </td>
+
+                <td>
+                    {{ prod.categoria }}
+                </td>
+                <td>
+                     <a href="/eliminar_producto/{{ loop.index0 }}"
+                     onclick="return confirm('¿Eliminar producto?')">
+                        🗑️ Eliminar
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</body>
+</html>
